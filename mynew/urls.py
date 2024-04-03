@@ -21,6 +21,13 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('api.urls')),
-    path('ctxh/',include('ctxh.urls'))
+    path('ctxh/',include('ctxh.urls')),
+    path('chamsoctre/',include('chamsoctre.urls')),
+    path('ldvl/',include('ldvl.urls')),
+    path('giadinh/',include('giadinh.urls')),
+    path('cssk/',include('cssk.urls')),
+    path('giaitri/',include('giaittri.urls')),
+    path('search/',include('search.urls'))
+
 ]
 

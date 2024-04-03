@@ -6,7 +6,7 @@ import requests
 
 class APIViews(APIView):
     def get(self, request):
-        base_url = "https://phunuvietnam.vn/chinh-tri-xa-hoi.htm"
+        base_url = "https://phunuvietnam.vn/lam-cha-me.htm"
         try:
             data = []
             url = base_url
@@ -19,12 +19,11 @@ class APIViews(APIView):
                 title = entry_title.text.strip() if entry_title else ""
                 img_tag = post_holder.find('img')
                 image_url = img_tag['src'] if img_tag and 'src' in img_tag.attrs else ""
-                link = "https:/" +post_holder.find('a', class_='box-category-link-title')['href']
+                link = "https:/phunuvietnam.vn" + post_holder.find('a', class_='box-category-link-title')['href']
                 entry_date = post_holder.find('span', class_='box-category-time time-ago')
                 date = entry_date.text.strip() if entry_date else ""
                 entry_p = post_holder.find('p', class_='box-category-sapo')
                 p = entry_p.text.strip() if entry_p else ""  # Corrected this line
-                # detail_data = self.get_detail_data(link)
                 data.append({'title': title, 'link': link, 'image_url': image_url, 'date': date, 'p': p})
             return Response({'data': data})
         except requests.exceptions.RequestException as e:
@@ -58,7 +57,7 @@ class GetNewView(APIView):
     def post(self, request):
         try:
             title = request.data.get('title', '')
-            base_url = "https://phunuvietnam.vn/chinh-tri-xa-hoi.htm"
+            base_url = "https://phunuvietnam.vn/lam-cha-me.htm"
             url = f"{base_url}?page=1"  # Chỉ lấy từ trang đầu tiên
             response = requests.get(url, verify=False)
             response.raise_for_status()

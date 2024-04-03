@@ -6,26 +6,27 @@ import requests
 
 class APIViews(APIView):
     def get(self, request):
-        base_url = "https://phunuvietnam.vn/chinh-tri-xa-hoi.htm"
+        base_url = "https://phunuvietnam.vn/yeu/gia-dinh-tre.htm"
         try:
             data = []
-            url = base_url
-            response = requests.get(url, verify=False)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, 'html.parser')
-            post_holders = soup.find_all('div', class_='box-category-item')
-            for post_holder in post_holders:
-                entry_title = post_holder.find('h2', class_='box-category-title-text')
-                title = entry_title.text.strip() if entry_title else ""
-                img_tag = post_holder.find('img')
-                image_url = img_tag['src'] if img_tag and 'src' in img_tag.attrs else ""
-                link = "https:/" +post_holder.find('a', class_='box-category-link-title')['href']
-                entry_date = post_holder.find('span', class_='box-category-time time-ago')
-                date = entry_date.text.strip() if entry_date else ""
-                entry_p = post_holder.find('p', class_='box-category-sapo')
-                p = entry_p.text.strip() if entry_p else ""  # Corrected this line
-                # detail_data = self.get_detail_data(link)
-                data.append({'title': title, 'link': link, 'image_url': image_url, 'date': date, 'p': p})
+            for page_num in range(1, 9):
+                url = f"{base_url}/{page_num}/"
+                response = requests.get(url, verify=False)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
+                post_holders = soup.find_all('div', class_='box-category-item')
+                for post_holder in post_holders:
+                    entry_title = post_holder.find('h2', class_='box-category-title-text')
+                    title = entry_title.text.strip() if entry_title else ""
+                    img_tag = post_holder.find('img')
+                    image_url = img_tag['src'] if img_tag and 'src' in img_tag.attrs else ""
+                    link = "https:/" +post_holder.find('a', class_='box-category-link-title')['href']
+                    entry_date = post_holder.find('span', class_='box-category-time time-ago')
+                    date = entry_date.text.strip() if entry_date else ""
+                    entry_p = post_holder.find('p', class_='box-category-sapo')
+                    p = entry_p.text.strip() if entry_p else ""  # Corrected this line
+                    # detail_data = self.get_detail_data(link)
+                    data.append({'title': title, 'link': link, 'image_url': image_url, 'date': date, 'p': p})
             return Response({'data': data})
         except requests.exceptions.RequestException as e:
             return Response({'error': f'Failed to fetch data from the website: {str(e)}'}, status=500)
@@ -58,7 +59,7 @@ class GetNewView(APIView):
     def post(self, request):
         try:
             title = request.data.get('title', '')
-            base_url = "https://phunuvietnam.vn/chinh-tri-xa-hoi.htm"
+            base_url = "https://phunuvietnam.vn/yeu/gia-dinh-tre.htm"
             url = f"{base_url}?page=1"  # Chỉ lấy từ trang đầu tiên
             response = requests.get(url, verify=False)
             response.raise_for_status()
